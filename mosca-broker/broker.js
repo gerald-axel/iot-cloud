@@ -8,9 +8,17 @@ var mosca = require('mosca');
 var mongo = require('mongodb');
 var clients = [],
     mongoInstance; 
-
+/*
 var server = new mosca.Server({
   port: 1883
+});
+*/
+var server = new mosca.Server({
+  http: {
+    port: 1883,
+    bundle: true,
+    static: './'
+  }
 });
 
 server.on('clientConnected', (client) => {

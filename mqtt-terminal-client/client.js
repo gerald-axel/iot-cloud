@@ -1,5 +1,6 @@
+var brokerIp = process.env.broker || 'localhost';
 var mqtt = require('mqtt')
-var client  = mqtt.connect('mqtt://127.0.0.1')
+var client  = mqtt.connect('mqtt://' + brokerIp)
 var exec = require('child_process').exec
 var schedule = require('node-schedule')
 var child, date

@@ -21,7 +21,6 @@ services:
       - mongo=mongo
     ports:
       - 1883:1883
-      - 80:80
     depends_on:
       - mongo
 
@@ -29,11 +28,23 @@ services:
     build: ./street-simulator-client
     container_name: street
     depends_on:
+      - broker  
+
+  web-client:
+    build: ./mqtt-web-client
+    container_name: web-client
+    ports:
+      - 3000:3000
+    environment:
+      - broker=broker
+    depends_on:
       - broker
 
-#  client:
-#    build: ./mqtt-client
-#    container_name: client
+#  termnial-client:
+#    build: ./mqtt-terminal-client
+#    container_name: terminal-client
+#    environment:
+#      - broker=broker
 #    depends_on:
 #      - broker
 
