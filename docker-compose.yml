@@ -1,0 +1,41 @@
+version: '2'
+services:
+  metabase:
+    image: metabase/metabase
+    container_name: metabase
+    ports:
+      - 3000:3000
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_db:/data/db
+
+  broker:
+    build: ./mosca-broker
+    container_name: broker
+    environment:
+      - mongo=mongo
+    ports:
+      - 1883:1883
+      - 80:80
+    depends_on:
+      - mongo
+
+  street-simulator:
+    build: ./street-simulator-client
+    container_name: street
+    depends_on:
+      - broker
+
+#  client:
+#    build: ./mqtt-client
+#    container_name: client
+#    depends_on:
+#      - broker
+
+volumes:
+  mongo_db:
