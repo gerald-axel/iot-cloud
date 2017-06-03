@@ -4,7 +4,7 @@ var exec = require('child_process').exec
 var schedule = require('node-schedule')
 var child, date
 
-/* Testing Certain topic*/
+/* Testing Certain topic */
 var json = {
 	"Accion" : 4,
 	"Valor" : 5
@@ -36,3 +36,4 @@ function executeProgram(action) {
 		}
 	})
 }
+

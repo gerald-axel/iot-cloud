@@ -3,6 +3,7 @@ const mongoUrl =  'mongodb://' + mongoIp + ':27017/umg';
 var clientShower = require('./clients/shower.js');
 var clientPetFeeder = require('./clients/petFeeder.js');
 var clientHomeAutomation = require('./clients/homeAutomation.js');
+var clientAutomatedCar = require('./clients/automatedCar.js');
 var mosca = require('mosca');
 var mongo = require('mongodb');
 var clients = [],
@@ -24,6 +25,7 @@ mongo.connect(mongoUrl, (err, db) => {
   if (err) { throw err; }
   console.log("Mongo Connection Successfull");
   mongoInstance = db;
+  timeout();
 });
 
 // fired when a message is received
@@ -48,6 +50,7 @@ server.on('published', (packet, client) => {
         break;
 
       case 'domotica':
+        break;      
 
       default:
         break;
@@ -74,8 +77,25 @@ function verifyJSON(packet){
   try {
     json = JSON.parse(packet.payload.toString());
   } catch (e) {
-    console.log('Invalid JSON', packet.payload);
+    console.log('Invalid JSON');
     return false;
   }
   return json;
+}
+
+/* Automated Car Simulator */
+function timeout() {
+  setTimeout(function () {         
+    // Do Something Here         
+    // Then recall the parent function to         
+    // create a recursive loovar todayDate = new Date()
+    //client.publish('carroautonomo', 'Hello mqtt')
+    //console.log('Hola');
+    clientAutomatedCar.getData(mongoInstance, server);
+    //console.log('Message',message);
+    //publish(message, 'carroautonomo');        
+    //client.publish('carroautonomo',mensaje)
+    //console.log('Adios');
+    timeout();     
+  }, 10000); 
 }
