@@ -8,14 +8,14 @@ var mosca = require('mosca');
 var mongo = require('mongodb');
 var clients = [],
     mongoInstance; 
-/*
-var server = new mosca.Server({
-  port: 1883
-});
+
+/* 
+  The port 1883 is already in used by de MQTT server
+  and the 1884 will be used for the http server 
 */
 var server = new mosca.Server({
   http: {
-    port: 1883,
+    port: 1884,
     bundle: true,
     static: './'
   }

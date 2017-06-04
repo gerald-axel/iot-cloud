@@ -12,5 +12,6 @@ RUN npm install
 COPY . /app
 
 EXPOSE 1883
+EXPOSE 1884
 
 CMD [ "npm", "start" ]
