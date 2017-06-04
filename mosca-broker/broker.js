@@ -10,10 +10,11 @@ var clients = [],
     mongoInstance; 
 
 /* 
-  The port 1883 is already in used by de MQTT server
+  The port 1883 is already allocated by the MQTT server
   and the 1884 will be used for the http server 
 */
 var server = new mosca.Server({
+  port: 1883,
   http: {
     port: 1884,
     bundle: true,
@@ -52,12 +53,15 @@ server.on('published', (packet, client) => {
         break;
 
       case 'petFeeder':
-          var message = clientHomeAutomation.homeAutomation(json, mongoInstance);
+          var message = clientPetFeeder.petFeeder(json, mongoInstance);
           if (!message) { return false; }
           publish(message, topic);        
         break;
 
       case 'domotica':
+          var message = clientHomeAutomation.homeAutomation(json, mongoInstance);
+          if (!message) { return false; }
+          publish(message, topic);       
         break;      
 
       default:
