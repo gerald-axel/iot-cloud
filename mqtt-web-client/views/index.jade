@@ -1,111 +1,175 @@
 extends layout
 
 block content
-  .container
-    .row
-      label Connecting to Broker Ip: #{process.env.broker || "127.0.0.1:1884"}
-    
+  .container-fluid
     br
-    .row
-      .form-group
-        label(for='topic') Select the client that you desire to send information:
-        select#topic.form-control
-          option
-          option(value='domotica') Domotica
-          option(value='petFeeder') PetFeeder
-          option(value='regadera') Regadera
-    
-    section#petFeeder.topic-section
-      br
+    section#up-panel
       .row
-        p
-          b PetFeeder
-      .form-group
-        label(for='edad') Edad
-        input#edad.form-control(type='text')      
-        label(for='peso') Peso
-        input#peso.form-control(type='text')      
-        label(for='actividad') Actividad
-        select#actividad.form-control
-          option(value='active') Active
-          option(value='inactive') Inactive
+        .col-md-4
+          p
+            b PetFeeder
+          .form-group
+            .checkbox-inline
+              label
+                input.suscribe(type='checkbox', data-toggle='toggle'  data-on="Suscribe" data-off="Unsuscribe" value="petFeeder")
+            &nbsp
+            button.btn.send(value="petFeeder", style='margin-top: -4px') Send
+          .form-group
+            label(for='actividad')  Actividad
+            select#actividad.form-control
+              option(value='active')  Active
+              option(value='inactive')  Inactive
+          .form-group
+            label(for='edad') Edad
+            input#edad.form-control(type='text')   
+          .form-group         
+            label(for='peso') Peso
+            input#peso.form-control(type='text')            
 
-    section#regadera.topic-section
-      br
+        .col-md-4
+          p
+            b Regadera
+          .form-group
+            .checkbox-inline
+              label
+                input.suscribe(type='checkbox', data-toggle='toggle'  data-on="Suscribe" data-off="Unsuscribe" value="regadera")
+            &nbsp
+            button.btn.send(value="regadera", style='margin-top: -4px') Send
+          .form-group
+            label(for='accionRegadera') Accion
+            select#accionRegadera.form-control
+              option(value='0') Apagar
+              option(value='1') Prender
+              option(value='2') Alterar
+              option(value='3') Temperatura Actual
+              option(value='4') Tiempo  del Baño
+          .form-group
+            label(for='valorRegadera')  Temperatura
+            input#valorRegadera.form-control(type='text')
+
+        .col-md-4
+          p
+            b Domotica
+          .form-group
+            .checkbox-inline
+              label
+                input.suscribe(type='checkbox', data-toggle='toggle'  data-on="Suscribe" data-off="Unsuscribe" value="domotica")
+            &nbsp
+            button.btn.send(value="domotica", style='margin-top: -4px') Send
+          .form-group
+            label(for='accionDomotica') Accion
+            select#accionDomotica.form-control
+              option(value='0')   Apagar
+              option(value='1')   Prender
+          .form-group
+            label(for='valorDomotica')  Hora
+            input#valorDomotica.form-control(type='text')
+      
       .row
-        p
-          b Regadera
-      .form-group
-        label(for='accion') Accion
-        select#accionRegadera.form-control
-          option(value='0') Apagar
-          option(value='1') Prender
-          option(value='2') Alterar
-          option(value='3') Temperatura Actual
-          option(value='4') Tiempo del Baño
-        label(for='valorRegadera') Temperatura
-        input#valorRegadera.form-control(type='text')
+        .col-md-4
+          table.table.table-striped#tablePetFeeder
+            thead
+              tr
+                th Hora
+                th Edad
+                th Peso
+                th Actividad
+            tbody#tbodypetFeeder   
 
-    section#domotica.topic-section
-      br
-      .row
-        p
-          b Domotica
-      .form-group
-        label(for='accion') Accion
-        select#accionDomotica.form-control
-          option(value='0')  Prender
-          option(value='1')  Apagar
-        label(for='valorDomotica') Hora
-        input#valorDomotica.form-control(type='text')
+        .col-md-4
+          table.table.table-striped#tableShower
+            thead
+              tr
+                th Hora
+                th Acción
+                th Valor
+            tbody#tbodyregadera     
 
-    br  
-    button#send.btn Send
+        .col-md-4
+          table.table.table-striped#tableDomotica
+            thead
+              tr
+                th Hora
+                th Acción
+                th Valor
+            tbody#tbodydomotica     
+
+    section#down-panel
 
   script(src='./javascripts/browserMqtt.js')
   script(type='text/javascript').
     var topic;
-    var ip = "#{process.env.broker}" || "127.0.0.1:1884";
-    var client = mqtt.connect("ws://" + ip); // you add a ws:// url here
+    var ip  = "#{process.env.broker}" ||  "127.0.0.1:1884";
+    var client  = mqtt.connect("ws://"  + ip);  //  you add a ws:// url here
+    var accionRegadera = { 
+                          "0" : "Apagar",
+                          "1" : "Prender",
+                          "2" : "Alterar",
+                          "3" : "Temp. Actual",
+                          "4" : "Duracion"
+                          };
+    var accionDomotica = { 
+                          "0" : "Apagar",
+                          "1" : "Prender"
+                          };
+    var tables = {};
+    $(document).ready(function(){
+        tables['petFeeder'] = $('#tablePetFeeder').DataTable();
+        tables['regadera'] = $('#tableShower').DataTable();
+        tables['domotica'] = $('#tableDomotica').DataTable();
+    });
     
-    $('#topic').on('change', function(){
-      topic = $(this).val();
-      if (topic) {
-        $('.topic-section').attr('hidden', true);
-        $('#' + topic).removeAttr('hidden');
+    $('.suscribe').on('change',  function()  {
+      var topic = $(this).val();
+      var action = $(this).prop('checked');
+      if (action) {
+        console.log('Suscribe')
+        client.subscribe(topic);
+      } else {
+        console.log('UnSuscribe')
+        client.unsubscribe(topic);
       }
-    });
-
-    $('#send').on('click', function() {
-      var json = creatingJSON();
-      client.subscribe(topic);
+    });        
+    
+    $('.send').on('click',  function()  {
+      var topic = $(this).val();
+      var json  = creatingJSON(topic);
       client.publish(topic, JSON.stringify(json));
-      //client.end();
-      });
-
-    client.on("message", function (topic, payload) {
-      console.log([topic, payload].join(": "));
-      //client.end();
     });
 
-    function creatingJSON(){
-      var json = {};
+    client.on("message",  function  (topic, payload)  {
+      //client.end();
+      console.log([topic, payload].join(":  "));
+      var json = JSON.parse(payload);
+      refreshTable(topic, json);
+    });
 
-      switch (topic) {
-        case 'regadera':
-          json['Accion'] = Number($('#accionRegadera').val());
+    function refreshTable(topic, json){
+      tables[topic].row.add([
+        new Date().toLocaleString(),
+        accionRegadera[json.Accion],
+        json.Valor
+      ]).draw( false );
+    }
+
+    function  creatingJSON(topic){
+      var json  = {};
+
+      switch  (topic) {
+        case  'regadera':
+          json['Accion']  = Number($('#accionRegadera').val());
           json['Valor'] = $('#valorRegadera').val();
           break;
 
-        case 'domotica':
-          json['Accion'] = Number($('#accionDomotica').val());
-          json['Valor'] = $('#valorDomotica').val();          
-        break;
+        case  'domotica':
+          json['Accion']  = Number($('#accionDomotica').val());
+          json['Valor'] = $('#valorDomotica').val();                    
+          break;
 
-        case 'petFeeder':
-          json['Accion'] = 0;
-          json['Edad'] = $('#edad').val();
-          json['Peso'] = $('#peso').val();
+        case  'petFeeder':
+          json['Accion']  = 0;
+          json['Edad']  = $('#edad').val();
+          json['Peso']  = $('#peso').val();
           json['Actividad'] = $('#actividad').val();
           break;
 
@@ -113,5 +177,5 @@ block content
           break;
       }
 
-      return json;
+      return  json;
     }

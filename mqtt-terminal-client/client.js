@@ -7,8 +7,8 @@ var child, date
 
 /* Testing Certain topic */
 var json = {
-	"Accion" : 4,
-	"Valor" : 5
+	"time" : Date.now() + 10000,
+	"action" : 1
 };
 
 client.on('connect',  () => {
@@ -18,7 +18,7 @@ client.on('connect',  () => {
  
 client.on('message', (topic, message) => {
 	console.log('Message', message.toString())
-  var json = message.toString();
+  var json = JSON.parse(message.toString());
 
   if (json.time) {
 		var timer = schedule.scheduleJob(json.time, () => {

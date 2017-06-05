@@ -26,6 +26,10 @@ server.on('clientConnected', (client) => {
     console.log('client connected', client.id);
 });
 
+server.on('clientDisconnected', (client) => {
+  console.log('Client Disconnected:', client.id);
+});
+
 server.on('ready', () => {
   console.log('Mosca server is up and running');
 });
