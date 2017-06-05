@@ -2,9 +2,10 @@ module.exports = {
 	petFeeder : (json, mongoInstance) => {
 		switch (json.Accion) {
 			/* POST  */
+			/*
 			case 0:
 				return  { "Edad": json.Edad , "Peso": json.Peso, "Actividad": json.Actividad };
-			
+			*/
 			/* GET */
 			case 1:
 			  mongoInstance.collection('petFeeder').insert(json, (err, records) => {

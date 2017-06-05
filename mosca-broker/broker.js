@@ -1,5 +1,5 @@
-var mongoIp = process.env.mongo || 'localhost';
-const mongoUrl =  'mongodb://' + mongoIp + ':27017/umg';
+var mongoIp = process.env.mongo || '127.0.0.1';
+var mongoUrl =  'mongodb://' + mongoIp + ':27017/umg';
 var clientShower = require('./clients/shower.js');
 var clientPetFeeder = require('./clients/petFeeder.js');
 var clientHomeAutomation = require('./clients/homeAutomation.js');

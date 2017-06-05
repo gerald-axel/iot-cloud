@@ -1,18 +1,117 @@
 extends layout
 
 block content
-  html
-    head
-      title test Ws mqtt.js
-      #{process.env.broker}
-    body
-      script(src='./javascripts/browserMqtt.js')
-      script.
-        var ip = "#{process.env.broker}" || "127.0.0.1";
-        var client = mqtt.connect("ws://" + ip) // you add a ws:// url here
-        client.subscribe("mqtt/demo")
-        client.on("message", function (topic, payload) {
-        alert([topic, payload].join(": "))
-        client.end()
-        })
-        client.publish("mqtt/demo", "hello world!")
+  .container
+    .row
+      label Connecting to Broker Ip: #{process.env.broker || "127.0.0.1:1884"}
+    
+    br
+    .row
+      .form-group
+        label(for='topic') Select the client that you desire to send information:
+        select#topic.form-control
+          option
+          option(value='domotica') Domotica
+          option(value='petFeeder') PetFeeder
+          option(value='regadera') Regadera
+    
+    section#petFeeder.topic-section
+      br
+      .row
+        p
+          b PetFeeder
+      .form-group
+        label(for='edad') Edad
+        input#edad.form-control(type='text')      
+        label(for='peso') Peso
+        input#peso.form-control(type='text')      
+        label(for='actividad') Actividad
+        select#actividad.form-control
+          option(value='active') Active
+          option(value='inactive') Inactive
+
+    section#regadera.topic-section
+      br
+      .row
+        p
+          b Regadera
+      .form-group
+        label(for='accion') Accion
+        select#accionRegadera.form-control
+          option(value='0') Apagar
+          option(value='1') Prender
+          option(value='2') Alterar
+          option(value='3') Temperatura Actual
+          option(value='4') Tiempo del Baño
+        label(for='valorRegadera') Temperatura
+        input#valorRegadera.form-control(type='text')
+
+    section#domotica.topic-section
+      br
+      .row
+        p
+          b Domotica
+      .form-group
+        label(for='accion') Accion
+        select#accionDomotica.form-control
+          option(value='0')  Prender
+          option(value='1')  Apagar
+        label(for='valorDomotica') Hora
+        input#valorDomotica.form-control(type='text')
+
+    br  
+    button#send.btn Send
+
+  script(src='./javascripts/browserMqtt.js')
+  script(type='text/javascript').
+    var topic;
+    var ip = "#{process.env.broker}" || "127.0.0.1:1884";
+    var client = mqtt.connect("ws://" + ip); // you add a ws:// url here
+    
+    $('#topic').on('change', function(){
+      topic = $(this).val();
+      if (topic) {
+        $('.topic-section').attr('hidden', true);
+        $('#' + topic).removeAttr('hidden');
+      }
+    });
+
+    $('#send').on('click', function() {
+      var json = creatingJSON();
+      client.subscribe(topic);
+      client.publish(topic, JSON.stringify(json));
+      //client.end();
+      });
+
+    client.on("message", function (topic, payload) {
+      console.log([topic, payload].join(": "));
+      //client.end();
+    });
+
+    function creatingJSON(){
+      var json = {};
+
+      switch (topic) {
+        case 'regadera':
+          json['Accion'] = Number($('#accionRegadera').val());
+          json['Valor'] = $('#valorRegadera').val();
+          break;
+
+        case 'domotica':
+          json['Accion'] = Number($('#accionDomotica').val());
+          json['Valor'] = $('#valorDomotica').val();          
+        break;
+
+        case 'petFeeder':
+          json['Accion'] = 0;
+          json['Edad'] = $('#edad').val();
+          json['Peso'] = $('#peso').val();
+          json['Actividad'] = $('#actividad').val();
+          break;
+
+        default:
+          break;
+      }
+
+      return json;
+    }
