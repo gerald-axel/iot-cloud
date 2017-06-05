@@ -46,3 +46,6 @@
 |  /homeAutomation.js                          | Logic for making and answering requests for the Autonomous House Client.        |
 |  /petFeeder.js                               | Logic for making and answering requests for the PetFeeder Client.               |
 |  /shower.js                                  | Logic for making and answering requests for the Shower Client..                 |
+
+### Web Client UI
+![alt UI](https://github.com/gerald-axel/iot-cloud/blob/master/mqtt-web-client/public/images/web-client-dashboard.PNG)
