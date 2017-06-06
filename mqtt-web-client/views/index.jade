@@ -73,9 +73,9 @@ block content
             thead
               tr
                 th Hora
+                th Actividad
                 th Edad
                 th Peso
-                th Actividad
             tbody#tbodypetFeeder   
 
         .col-md-4
@@ -160,7 +160,7 @@ block content
             label(for='subida') Subida 
             input#subida.form-control(type='text')            
           .form-group
-            label(for='duracionViaje') Bajada 
+            label(for='bajada') Bajada 
             input#bajada.form-control(type='text')
             
       .row
@@ -221,7 +221,7 @@ block content
       var topic = $(this).val();
       var action = $(this).prop('checked');
       if (action) {
-        console.log('Suscribe')
+        console.log('Suscribe', topic)
         client.subscribe(topic);
       } else {
         console.log('UnSuscribe')
@@ -236,18 +236,17 @@ block content
     });
 
     client.on("message",  function  (topic, payload)  {
-      //client.end();
       console.log([topic, payload].join(":  "));
-      var json = JSON.parse(payload);
-      refreshTable(topic, json);
+      console.log("Payload", JSON.parse(payload));
+      refreshTable(topic, JSON.parse(payload));
     });
 
     function refreshTable(topic, json){
-      tables[topic].row.add([
-        new Date().toLocaleString(),
-        accionRegadera[json.Accion],
-        json.Valor
-      ]).draw( false );
+      var array = [new Date().toLocaleString()];
+      for (var i in json) {
+        array.push(json[i])
+      }
+      tables[topic].row.add(array).draw();
     }
 
     function  creatingJSON(topic){
@@ -284,10 +283,10 @@ block content
           break;
 
         case  'petFeeder':
-          json['Accion']  = 0;
+          json['Actividad'] = $('#actividad').val();
           json['Edad']  = $('#edad').val();
           json['Peso']  = $('#peso').val();
-          json['Actividad'] = $('#actividad').val();
+          json['Accion']  = "0";
           break;
 
         default:

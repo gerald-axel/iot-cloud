@@ -8,7 +8,6 @@ services:
 
   mongo:
     image: mongo
-    command: mongod --smallfiles --logpath=/dev/null
     container_name: mongo
     ports:
       - 27017:27017
