@@ -73,7 +73,7 @@ server.on('published', (packet, client) => {
           var message = clientQuickBus.quickBus(json, mongoInstance);
           if (!message) { return false; }
           publish(message, topic);       
-        break;           
+        break; 
 
       case 'carroautonomo':
           var message = clientAutomatedCar.carroAutonomo(json, mongoInstance);

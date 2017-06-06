@@ -22,7 +22,7 @@ module.exports = {
 				return  { "Accion": 3 };
 			*/
 			/* GET Tiempo del Baño */
-			case "4":
+			case 4:
 			  var consumo = (0.055 * (json.Valor / 3600));
 			  var documento = {
 			    "Fecha": new Date(),

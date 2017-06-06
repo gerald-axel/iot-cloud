@@ -12,8 +12,9 @@ var json = {
 };
 
 client.on('connect',  () => {
-  client.subscribe('regadera')
-  client.publish('regadera', JSON.stringify(json))
+  client.subscribe('carroautonomo')
+  //client.publish('carroautonomo', JSON.stringify(json))
+  client.publish('carroautonomo', "77777777")
 })
  
 client.on('message', (topic, message) => {
