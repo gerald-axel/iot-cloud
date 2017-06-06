@@ -1,4 +1,16 @@
 module.exports = {
+  carroAutonomo : (json, mongoInstance) => {
+		var mensaje = json.toString();
+		var documento= {
+			"duracionViaje":mensaje
+		}
+		mongoInstance.collection('tiempoRuta').insert(documento,function(err,records){
+			if(err){
+				throw err;
+			}
+		});	
+	},
+
 	getData : (mongoInstance, server) => {
 	  //use the find() API and pass an empty query object to retrieve all records
 		mongoInstance.collection("data_history").aggregate(

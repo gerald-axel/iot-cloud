@@ -1,6 +1,6 @@
 module.exports = {
 	petFeeder : (json, mongoInstance) => {
-		switch (json.Accion) {
+		switch (Number(json.Accion)) {
 			/* POST  */
 			/*
 			case 0:

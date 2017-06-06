@@ -1,6 +1,6 @@
 module.exports = {
 	shower : (json, mongoInstance) => {
-		switch (json.Accion) {
+		switch (Number(json.Accion)) {
 			/* POST Apagar */
 			/*
 			case 0:

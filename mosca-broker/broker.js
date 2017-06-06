@@ -4,6 +4,7 @@ var clientShower = require('./clients/shower.js');
 var clientPetFeeder = require('./clients/petFeeder.js');
 var clientHomeAutomation = require('./clients/homeAutomation.js');
 var clientAutomatedCar = require('./clients/automatedCar.js');
+var clientQuickBus = require('./clients/quickBus.js');
 var mosca = require('mosca');
 var mongo = require('mongodb');
 var clients = [],
@@ -43,7 +44,7 @@ mongo.connect(mongoUrl, (err, db) => {
 
 // fired when a message is received
 server.on('published', (packet, client) => {
-  console.log('Packet', packet.payload.toString());
+  console.log('Packet', packet.topic, packet.payload.toString());
   var json = verifyJSON(packet);
   if (!json) { return false; }
 
@@ -64,6 +65,18 @@ server.on('published', (packet, client) => {
 
       case 'domotica':
           var message = clientHomeAutomation.homeAutomation(json, mongoInstance);
+          if (!message) { return false; }
+          publish(message, topic);       
+        break;            
+
+      case 'quickBus':
+          var message = clientQuickBus.quickBus(json, mongoInstance);
+          if (!message) { return false; }
+          publish(message, topic);       
+        break;           
+
+      case 'carroautonomo':
+          var message = clientAutomatedCar.carroAutonomo(json, mongoInstance);
           if (!message) { return false; }
           publish(message, topic);       
         break;      

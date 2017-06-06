@@ -2,6 +2,8 @@ extends layout
 
 block content
   .container-fluid
+    .form-group
+      button.btn.btn-info(type='button', data-toggle='collapse', data-target='#up-panel') Panel 1
     br
     section#up-panel
       .row
@@ -92,9 +94,102 @@ block content
                 th Hora
                 th Acción
                 th Valor
-            tbody#tbodydomotica     
+            tbody#tbodydomotica
+    br
 
+    .form-group     
+      button.btn.btn-info(type='button', data-toggle='collapse', data-target='#down-panel') Panel 2
+    
     section#down-panel
+      .row
+        .col-md-4
+          p
+            b Carro Autonomo
+          .form-group
+            .checkbox-inline
+              label
+                input.suscribe(type='checkbox', data-toggle='toggle'  data-on="Suscribe" data-off="Unsuscribe" value="carroautonomo")
+            &nbsp
+            button.btn.send(value="carroautonomo", style='margin-top: -4px') Send
+          .form-group
+            label(for='duracionViaje') Duracion 
+            input#duracionViaje.form-control(type='text')
+
+        .col-md-8
+          p
+            b 
+          .form-group
+            .checkbox-inline
+              label
+                input.suscribe(type='checkbox', data-toggle='toggle'  data-on="Suscribe" data-off="Unsuscribe" value="quickBus")
+            &nbsp
+            button.btn.send(value="quickBus", style='margin-top: -4px') Send
+        .col-md-4
+          .form-group
+            label(for='camion') Camión 
+            input#camion.form-control(type='text')            
+          .form-group
+            label(for='ano') Año
+            input#ano.form-control(type='text')
+          .form-group
+            label(for='mes') Mes 
+            input#mes.form-control(type='text')            
+          .form-group
+            label(for='dia') Día 
+            input#dia.form-control(type='text')
+          .form-group
+            label(for='fecha') Fecha 
+            input#fecha.form-control(type='text')            
+          .form-group
+            label(for='hora') Hora 
+            input#hora.form-control(type='text')
+        .col-md-4
+          .form-group
+            label(for='parada') Parada 
+            input#parada.form-control(type='text')            
+          .form-group
+            label(for='longitud') Longitud 
+            input#longitud.form-control(type='text')
+          .form-group
+            label(for='latitud') Latitud 
+            input#latitud.form-control(type='text')            
+          .form-group
+            label(for='pasajeros') Pasajeros 
+            input#pasajeros.form-control(type='text')
+          .form-group
+            label(for='subida') Subida 
+            input#subida.form-control(type='text')            
+          .form-group
+            label(for='duracionViaje') Bajada 
+            input#bajada.form-control(type='text')
+            
+      .row
+        .col-md-4
+          table.table.table-striped#tableCarroAutonomo
+            thead
+              tr
+                th Hora
+                th Duracion
+            tbody#tbodycarroautonomo       
+
+        .col-md-8
+          table.table.table-striped#tableQuickBus
+            thead
+              tr
+                th Hora
+                th Camión
+                th Año
+                th Mes
+                th Día
+                th Fecha
+                th Hora
+                th Parada
+                th Longitud
+                th Latitud
+                th Pasajeros
+                th Subida
+                th Bajada
+            tbody#tbodyQuickBus    
 
   script(src='./javascripts/browserMqtt.js')
   script(type='text/javascript').
@@ -113,10 +208,13 @@ block content
                           "1" : "Prender"
                           };
     var tables = {};
+    
     $(document).ready(function(){
         tables['petFeeder'] = $('#tablePetFeeder').DataTable();
         tables['regadera'] = $('#tableShower').DataTable();
         tables['domotica'] = $('#tableDomotica').DataTable();
+        tables['carroautonomo'] = $('#tableCarroAutonomo').DataTable();
+        tables['quickBus'] = $('#tableQuickBus').DataTable();
     });
     
     $('.suscribe').on('change',  function()  {
@@ -164,6 +262,25 @@ block content
         case  'domotica':
           json['Accion']  = Number($('#accionDomotica').val());
           json['Valor'] = $('#valorDomotica').val();                    
+          break;        
+
+        case  'carroautonomo':
+          json['duracionViaje'] = $('#duracionViaje').val();
+          break;        
+
+        case  'quickBus':
+          json['camion'] = $('#camion').val();
+          json['ano'] = $('#ano').val();
+          json['mes'] = $('#mes').val();
+          json['dia'] = $('#dia').val();
+          json['fecha'] = $('#fecha').val();
+          json['hora'] = $('#hora').val();
+          json['parada'] = $('#parada').val();
+          json['longitud'] = $('#longitud').val();
+          json['latitud'] = $('#latitud').val();
+          json['pasajeros'] = $('#pasajeros').val();
+          json['subida'] = $('#subida').val();
+          json['bajada'] = $('#bajada').val();
           break;
 
         case  'petFeeder':
